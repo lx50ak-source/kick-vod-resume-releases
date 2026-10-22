@@ -49,22 +49,16 @@ Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $triggers -S
     -Description 'Keeps the Kick VOD Resume extension files up to date.' -Force | Out-Null
 Write-Host "Kick VOD Resume: auto-update registered ('$taskName')."
 
-# 3. One-time step in Brave. Scripts cannot add an extension to your profile without
-#    editing Brave's data files, so this part stays a manual click.
-$brave = @(
-    "$env:ProgramFiles\BraveSoftware\Brave-Browser\Application\brave.exe",
-    "${env:ProgramFiles(x86)}\BraveSoftware\Brave-Browser\Application\brave.exe",
-    "$env:LOCALAPPDATA\BraveSoftware\Brave-Browser\Application\brave.exe"
-) | Where-Object { Test-Path $_ } | Select-Object -First 1
-
+# 3. One-time step in your own Brave. Scripts cannot add an extension to your profile
+#    without editing Brave's data files, so this part stays a manual click.
+#    Nothing is opened: Brave and its tabs are left exactly as they are.
 if (-not $env:KVR_NO_LAUNCH) { Set-Clipboard -Value $extDir }
 Write-Host ''
-Write-Host 'First time only, in Brave:' -ForegroundColor Yellow
-Write-Host '  1. Open  brave://extensions'
+Write-Host 'First time only, in your Brave:' -ForegroundColor Yellow
+Write-Host '  1. Type  brave://extensions  in the address bar'
 Write-Host '  2. Turn on  Developer mode  (top right)'
 Write-Host '  3. Click  Load unpacked , press Ctrl+V , then  Select Folder'
+Write-Host '  4. Pin it: puzzle icon in the toolbar -> pin "Kick VOD Resume"'
 Write-Host "  (the folder path is already on the clipboard: $extDir)"
 Write-Host ''
 Write-Host 'Already done before? Nothing else to do - just restart Brave to get the new version.'
-
-if ($brave -and -not $env:KVR_NO_LAUNCH) { Start-Process $brave 'brave://extensions' }
